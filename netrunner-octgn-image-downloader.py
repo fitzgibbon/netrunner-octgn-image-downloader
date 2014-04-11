@@ -7,9 +7,16 @@ import urllib.request
 def name_convert(card_name):
     tmp = card_name
     tmp = tmp.replace(" ", "-")
-    tmp = tmp.replace(" ", "-")
+    tmp = tmp.replace(".", "-")
+    tmp = tmp.replace("*", "")
+    tmp = tmp.replace("!", "")
+    tmp = tmp.replace(":", "")
+    tmp = tmp.replace("@", "")
     tmp = tmp.replace("'", "")
+    tmp = tmp.replace("\"", "")
     tmp = tmp.replace("&", "and")
+    tmp = tmp.replace("---", "-")
+    tmp = tmp.replace("--", "-")
     return tmp.lower()
 
 def get_pic_url_map(set_path):
@@ -20,12 +27,18 @@ def get_pic_url_map(set_path):
     print(set_name)
     for cards in root.iter("cards"):
         for card in cards.iter("card"):
-            print("{}: {}".format(card.attrib["name"], card.attrib["id"]))
+            subtitle = None
+            for prop in card.iter("property"):
+                if prop.attrib["name"] == "Subtitle":
+                    subtitle = prop.attrib["value"]
+            print("{} ({}): {}".format(card.attrib["name"], subtitle, card.attrib["id"]))
             target_dir = set_path + "/Cards"
             target_filename = target_dir + "/" + card.attrib["id"] + ".png"
             url_base = "http://imgnetrunner.meteor.com/cards/"
             url_set_name = name_convert(set_name)
             url_card_name = name_convert(card.attrib["name"])
+            if subtitle and set_name.lower() != "core":
+                url_card_name += "-" + name_convert(subtitle)
             url_full = url_base + url_card_name + "-" + url_set_name + ".png"
             print(url_full)
             with urllib.request.urlopen(url_full) as u:
