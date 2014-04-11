@@ -17,6 +17,9 @@ def name_convert(card_name):
     tmp = tmp.replace("&", "and")
     tmp = tmp.replace("---", "-")
     tmp = tmp.replace("--", "-")
+    tmp = tmp.replace("randd", "r-d")
+    tmp = tmp.replace("joshua-b-", "joshua-b")
+    tmp = tmp.replace("alix-t4lb07", "alix-t4lbo7")
     return tmp.lower()
 
 def get_pic_url_map(set_path):
@@ -25,6 +28,8 @@ def get_pic_url_map(set_path):
     root = set_xml.getroot()
     set_name = root.attrib["name"]
     print(set_name)
+    if set_name == "Markers" or set_name == "Promos":
+        next
     for cards in root.iter("cards"):
         for card in cards.iter("card"):
             subtitle = None
@@ -37,7 +42,8 @@ def get_pic_url_map(set_path):
             url_base = "http://imgnetrunner.meteor.com/cards/"
             url_set_name = name_convert(set_name)
             url_card_name = name_convert(card.attrib["name"])
-            if subtitle and set_name.lower() != "core":
+            non_sub_sets = set(["core", "humanitys-shadow", "what-lies-ahead", "cyber-exodus"])
+            if subtitle and name_convert(set_name) not in non_sub_sets:
                 url_card_name += "-" + name_convert(subtitle)
             url_full = url_base + url_card_name + "-" + url_set_name + ".png"
             print(url_full)
