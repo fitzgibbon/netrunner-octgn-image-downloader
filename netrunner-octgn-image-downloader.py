@@ -5,7 +5,7 @@ import xml.etree.ElementTree as et
 import urllib.request
 
 def name_convert(card_name):
-    tmp = card_name
+    tmp = card_name.lower()
     tmp = tmp.replace(" ", "-")
     tmp = tmp.replace(".", "-")
     tmp = tmp.replace("*", "")
@@ -42,8 +42,9 @@ def get_pic_url_map(set_path):
             url_base = "http://imgnetrunner.meteor.com/cards/"
             url_set_name = name_convert(set_name)
             url_card_name = name_convert(card.attrib["name"])
-            non_sub_sets = set(["core", "humanitys-shadow", "what-lies-ahead", "cyber-exodus"])
-            if subtitle and name_convert(set_name) not in non_sub_sets:
+            non_sub_sets = set(["core", "humanitys-shadow", "cyber-exodus"])
+            non_sub_cards = set(["whizzard", "andromeda"])
+            if subtitle and name_convert(set_name) not in non_sub_sets and name_convert(card.attrib["name"]) not in non_sub_cards:
                 url_card_name += "-" + name_convert(subtitle)
             url_full = url_base + url_card_name + "-" + url_set_name + ".png"
             print(url_full)
